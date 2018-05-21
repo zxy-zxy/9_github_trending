@@ -35,11 +35,11 @@ def load_repositories_from_github(page_number, date_begin):
         return False, None
 
 
-def get_trending_repositories(repository_limit_to_process, date_begin):
-    repositories_remains_to_process = repository_limit_to_process
+def get_trending_repositories(repository_to_process_limit, date_begin):
+    repositories_qty_remains_to_process = repository_to_process_limit
     current_page_number = 1
 
-    while repositories_remains_to_process:
+    while repositories_qty_remains_to_process:
         has_data, repositories_data = load_repositories_from_github(
             current_page_number,
             date_begin
@@ -48,26 +48,27 @@ def get_trending_repositories(repository_limit_to_process, date_begin):
         if not has_data:
             break
 
-        to_process = min(repositories_remains_to_process, len(repositories_data['items']))
+        to_process_qty = min(repositories_qty_remains_to_process, len(repositories_data['items']))
 
-        for current_repository in repositories_data['items'][:to_process]:
+        for current_repository in repositories_data['items'][:to_process_qty]:
             yield current_repository
 
-        repositories_remains_to_process -= to_process
+        repositories_qty_remains_to_process -= to_process_qty
+        current_page_number += 1
 
 
 if __name__ == '__main__':
 
-    repository_limit_to_process = 20
-    days_before_limit = 7
-    date_begin = (datetime.now() - timedelta(days=days_before_limit)).strftime('%Y-%m-%d')
+    repository_to_process_limit = 20
+    search_period_limit = 7
+    date_begin = (datetime.now() - timedelta(days=search_period_limit)).strftime('%Y-%m-%d')
 
-    last_week_github_repositories = get_trending_repositories(
-        repository_limit_to_process,
+    github_repositories = get_trending_repositories(
+        repository_to_process_limit,
         date_begin
     )
 
-    for repository in last_week_github_repositories:
+    for repository in github_repositories:
 
         has_issues, issues_for_repo = get_open_issues_for_repo(
             repository['url'],
