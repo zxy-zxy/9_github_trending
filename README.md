@@ -1,11 +1,28 @@
 # Github Trends
 
-[TODO. There will be project description]
+A script that provides information about the most popular projects in last 7 days from [Github](https://github.com/)
+If the project from the list has open issues, issues list will be displayed also.
 
-# Project Goals
+Script works with [Github API](https://api.github.com/search/repositories)
 
-The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)
+## Requirements
+Python 3 should be already installed.
+ Dependencies:
 
+1.  [Requests library](http://docs.python-requests.org/en/master/)
+ 
+Then use pip (or pip3 if there is a conflict with old Python 2 setup) to install dependencies:
+```bash
+pip install -r requirements.txt
+```
+For better interaction is recommended to use [virtualenv](https://github.com/pypa/virtualenv).
+
+### Example input
+```bash
+python github_trending.py
+```
+
+### Example output
 
 ```bash
 Repo: https://api.github.com/repos/mimecorg/vuido, stargazers count: 991
@@ -74,3 +91,10 @@ Issues count: 0
 Repo: https://api.github.com/repos/unamer/CVE-2018-8120, stargazers count: 88
 Issues count: 0
 ```
+
+
+# Project Goals
+
+The code is written for educational purposes. Training course for web-developers - [DEVMAN.org](https://devman.org)
+
+
