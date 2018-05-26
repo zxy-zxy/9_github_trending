@@ -1,7 +1,4 @@
-from datetime import (
-    datetime,
-    timedelta
-)
+from datetime import datetime, timedelta
 import requests
 
 
@@ -12,9 +9,9 @@ def get_open_issues_for_repo(repo_url):
         params={'state': 'open'}
     )
     try:
-        return True, issues_data.json()
+        return issues_data.json()
     except ValueError:
-        return False, None
+        return None
 
 
 def load_repositories_from_github(page_number, date_begin):
@@ -30,9 +27,9 @@ def load_repositories_from_github(page_number, date_begin):
     )
 
     try:
-        return True, response.json()
+        return response.json()
     except ValueError:
-        return False, None
+        return None
 
 
 def get_trending_repositories(repository_to_process_limit, date_begin):
@@ -40,12 +37,15 @@ def get_trending_repositories(repository_to_process_limit, date_begin):
     current_page_number = 1
 
     while repositories_qty_remains_to_process:
-        has_data, repositories_data = load_repositories_from_github(
+        repositories_data = load_repositories_from_github(
             current_page_number,
             date_begin
         )
 
-        if not has_data:
+        if repositories_data is None:
+            break
+
+        if not ('items' in repositories_data and isinstance(repositories_data['items'], list)):
             break
 
         to_process_qty = min(repositories_qty_remains_to_process, len(repositories_data['items']))
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     for repository in github_repositories:
 
-        has_issues, issues_for_repo = get_open_issues_for_repo(
+        issues_for_repo = get_open_issues_for_repo(
             repository['url'],
         )
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
             repository['stargazers_count'])
         )
 
-        if has_issues and isinstance(issues_for_repo, list):
+        if issues_for_repo is not None and isinstance(issues_for_repo, list):
             print('Issues count: {}'.format(len(issues_for_repo)))
             for current_issues in issues_for_repo:
                 print('\tIssue url: {}'.format(current_issues['url']))
