@@ -45,10 +45,14 @@ def get_trending_repositories(repository_to_process_limit, date_begin):
         if repositories_data is None:
             break
 
-        if not ('items' in repositories_data and isinstance(repositories_data['items'], list)):
+        if not ('items' in repositories_data and
+                isinstance(repositories_data['items'], list)):
             break
 
-        to_process_qty = min(repositories_qty_remains_to_process, len(repositories_data['items']))
+        to_process_qty = min(
+            repositories_qty_remains_to_process,
+            len(repositories_data['items'])
+        )
 
         for current_repository in repositories_data['items'][:to_process_qty]:
             yield current_repository
@@ -61,7 +65,9 @@ if __name__ == '__main__':
 
     repository_to_process_limit = 20
     search_period_limit = 7
-    date_begin = (datetime.now() - timedelta(days=search_period_limit)).strftime('%Y-%m-%d')
+    date_begin = (
+            datetime.now() - timedelta(days=search_period_limit)
+    ).strftime('%Y-%m-%d')
 
     github_repositories = get_trending_repositories(
         repository_to_process_limit,
